@@ -15,16 +15,14 @@ async def download_video(url: str):
     Universal endpoint to download a video from YouTube, TikTok, Instagram Reels, etc.
     using yt-dlp.
     """
-    # Generate a unique filename to avoid collisions
     filename_pattern = f"downloaded_video_{uuid.uuid4()}.%(ext)s"
 
     try:
-        # 1. Run yt-dlp via subprocess to download the video.
-        # 2. Capture stdout and stderr for proper error handling.
+
         cmd = [
             "yt-dlp",
             "-o",
-            filename_pattern,  # output filename pattern
+            filename_pattern, 
             url
         ]
         process_result = subprocess.run(
@@ -33,7 +31,6 @@ async def download_video(url: str):
             text=True
         )
 
-        # If yt-dlp returns a non-zero exit code, something went wrong
         if process_result.returncode != 0:
             error_msg = process_result.stderr.strip()
             raise HTTPException(
@@ -41,7 +38,6 @@ async def download_video(url: str):
                 detail=f"Error: Could not download video.\nDetails:\n{error_msg}"
             )
 
-        # Successfully downloaded
         return {
             "message": "Video downloaded successfully!",
             "filename_pattern": filename_pattern
